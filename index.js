@@ -11,13 +11,14 @@ const url = process.env.MONGODB_URI;
 
 // cors middleware
 app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
 const allowedOrigins = [
   "http://localhost:5173",
   "https://social-media-login-signup-project.vercel.app/login",
 ];
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.use(
   cors({
