@@ -2,6 +2,7 @@ import express from "express";
 import { upload } from "../middlewares/multer_fileUploads.middleware.js";
 import {
   findUser,
+  findUserandDelete,
   findUserProfile,
   registerUser,
   updateUser,
@@ -34,5 +35,7 @@ router.patch(
   ]),
   updateUser
 );
+
+router.delete("/userdel/:email", findUserandDelete);
 
 export default router;
