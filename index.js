@@ -14,7 +14,7 @@ app.use(cors());
 
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://social-media-login-signup-project.vercel.app/login",
+  "https://social-media-login-signup-project.vercel.app",
 ];
 
 app.use(
