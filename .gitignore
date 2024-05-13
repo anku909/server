@@ -5,5 +5,3 @@ node_modules*
 //secerts
 *.env
 
-//temp files
-uploads
