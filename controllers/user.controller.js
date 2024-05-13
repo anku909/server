@@ -9,29 +9,23 @@ const registerUser = async (req, res) => {
   const isProfileImgFile = req.files && req.files["profileImg"];
   const isCoverImgFile = req.files && req.files["coverImg"];
 
-  // Get local paths of uploaded images
-  const profileImgLocalPath = isProfileImgFile
-    ? req.files["profileImg"][0].path
+  const profileImgStream = isProfileImgFile
+    ? streamifier.createReadStream(req.files["profileImg"][0].buffer)
     : null;
-  const coverImgLocalPath = isCoverImgFile
-    ? req.files["coverImg"][0].path
+  const coverImgStream = isCoverImgFile
+    ? streamifier.createReadStream(req.files["coverImg"][0].buffer)
     : null;
 
-  // If profileImg is a file, upload it to Cloudinary
   const uploadedProfileImg = isProfileImgFile
-    ? await uploadOnCloudinary(profileImgLocalPath)
+    ? await uploadOnCloudinary(profileImgStream)
     : null;
 
-  // If coverImg is a file, upload it to Cloudinary
   const uploadedCoverImg = isCoverImgFile
-    ? await uploadOnCloudinary(coverImgLocalPath)
+    ? await uploadOnCloudinary(coverImgStream)
     : null;
-
-  // If profileImg is provided by the client, use it; otherwise, use the uploaded URL
   profileImg =
     profileImg || (uploadedProfileImg ? uploadedProfileImg.secure_url : null);
 
-  // If coverImg is provided by the client, use it; otherwise, use the uploaded URL
   coverImg =
     coverImg || (uploadedCoverImg ? uploadedCoverImg.secure_url : null);
 
