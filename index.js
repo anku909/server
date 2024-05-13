@@ -17,6 +17,20 @@ const allowedOrigins = [
   "https://social-media-login-signup-project.vercel.app/login",
 ];
 
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Check if the request origin is in the allowedOrigins array or is undefined (for non-browser requests)
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true); // Allow the request
+      } else {
+        callback(new Error("Not allowed by CORS")); // Block the request
+      }
+    },
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"], // Allow all HTTP methods
+  })
+);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

@@ -130,8 +130,6 @@ const updateUser = async (req, res) => {
 const findUserandDelete = async (req, res) => {
   const userEmail = req.params.email;
 
-  console.log(userEmail);
-
   try {
     const deletedUser = await User.findOneAndDelete({ email: userEmail });
 
