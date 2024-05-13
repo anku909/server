@@ -7,7 +7,11 @@
     }
   ],
   "routes": [
-    { "src": "/api/(.*)", "dest": "index.js", "headers": { "Timeout": "60s" } },
-    { "src": "/(.*)", "dest": "index.js" }
+    {
+      "src": "/api/(.*)",
+      "dest": "index.js",
+      "methods": ["GET", "POST", "PATCH"]
+    },
+    { "src": "/(.*)", "dest": "index.js", "methods": ["GET"] }
   ]
 }
