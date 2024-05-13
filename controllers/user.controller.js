@@ -1,5 +1,6 @@
 import { User } from "../models/user.models.js";
 import { uploadOnCloudinary } from "../utils/cloudinary_uploads.utils.js";
+import streamifier from "streamifier";
 
 const registerUser = async (req, res) => {
   const body = req.body;
@@ -88,18 +89,32 @@ const updateUser = async (req, res) => {
     let coverImgUrl = existingUser.coverImg;
 
     if (req.files) {
-      // Upload profile image if exists
-      if (req.files["profileImg"]) {
-        profileImgUrl = await uploadOnCloudinary(
-          req.files["profileImg"][0].path
-        );
-        if (!profileImgUrl) throw new Error("Profile image upload failed");
-      }
+      try {
+        if (req.files["profileImg"]) {
+          const profileImgBuffer = req.files["profileImg"][0].buffer;
+          const profileImgStream =
+            streamifier.createReadStream(profileImgBuffer);
 
-      // Upload cover image if exists
-      if (req.files["coverImg"]) {
-        coverImgUrl = await uploadOnCloudinary(req.files["coverImg"][0].path);
-        if (!coverImgUrl) throw new Error("Cover image upload failed");
+          const profileImgUrl = await uploadOnCloudinary(profileImgStream);
+
+          if (!profileImgUrl) {
+            throw new Error("Profile image upload failed");
+          }
+        }
+
+        if (req.files["coverImg"]) {
+          const coverImgBuffer = req.files["coverImg"][0].buffer;
+          const coverImgStream = streamifier.createReadStream(coverImgBuffer);
+
+          const coverImgUrl = await uploadOnCloudinary(coverImgStream);
+
+          if (!coverImgUrl) {
+            throw new Error("Cover image upload failed");
+          }
+        }
+      } catch (error) {
+        console.error("Error uploading image to Cloudinary:", error.message);
+        throw new Error("Image upload failed");
       }
     }
 
