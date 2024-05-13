@@ -24,10 +24,10 @@ app.use(
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true); // Allow the request
       } else {
-        callback(new Error("Not allowed by CORS")); // Block the request
+        callback(new Error("Not allowed by CORS"));
       }
     },
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"], // Allow all HTTP methods
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
   })
 );
 
