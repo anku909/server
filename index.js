@@ -10,23 +10,9 @@ const PORT = process.env.PORT || 3000;
 const url = process.env.MONGODB_URI;
 
 // cors middleware
-app.use(cors());
-
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://social-media-login-signup-project.vercel.app",
-];
-
 app.use(
   cors({
-    origin: (origin, callback) => {
-      // Check if the request origin is in the allowedOrigins array or is undefined (for non-browser requests)
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true); // Allow the request
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
+    origin: "*",
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
   })
 );
