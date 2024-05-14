@@ -6,23 +6,24 @@ const registerUser = async (req, res) => {
   const body = req.body;
   let { name, phoneNo, userName, email, profileImg, coverImg } = body;
 
-  const isProfileImgFile = req.files && req.files["profileImg"];
-  const isCoverImgFile = req.files && req.files["coverImg"];
+  const isProfileImg = req.files && req.files["profileImg"];
+  const isCoverImg = req.files && req.files["coverImg"];
 
-  const profileImgStream = isProfileImgFile
+  const profileImgStream = isProfileImg
     ? streamifier.createReadStream(req.files["profileImg"][0].buffer)
     : null;
-  const coverImgStream = isCoverImgFile
+  const coverImgStream = isCoverImg
     ? streamifier.createReadStream(req.files["coverImg"][0].buffer)
     : null;
 
-  const uploadedProfileImg = isProfileImgFile
+  const uploadedProfileImg = isProfileImg
     ? await uploadOnCloudinary(profileImgStream)
     : null;
 
-  const uploadedCoverImg = isCoverImgFile
+  const uploadedCoverImg = isCoverImg
     ? await uploadOnCloudinary(coverImgStream)
     : null;
+
   profileImg =
     profileImg || (uploadedProfileImg ? uploadedProfileImg.secure_url : null);
 
@@ -89,7 +90,7 @@ const updateUser = async (req, res) => {
           const profileImgStream =
             streamifier.createReadStream(profileImgBuffer);
 
-          const profileImgUrl = await uploadOnCloudinary(profileImgStream);
+          profileImgUrl = await uploadOnCloudinary(profileImgStream);
 
           if (!profileImgUrl) {
             throw new Error("Profile image upload failed");
@@ -100,7 +101,7 @@ const updateUser = async (req, res) => {
           const coverImgBuffer = req.files["coverImg"][0].buffer;
           const coverImgStream = streamifier.createReadStream(coverImgBuffer);
 
-          const coverImgUrl = await uploadOnCloudinary(coverImgStream);
+          coverImgUrl = await uploadOnCloudinary(coverImgStream);
 
           if (!coverImgUrl) {
             throw new Error("Cover image upload failed");
