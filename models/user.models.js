@@ -4,7 +4,6 @@ const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: true,
     },
     bio: {
       type: String,
@@ -22,14 +21,14 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    coverImg: {
-      type: String,
+    coverImgData: {
+      type: Array,
     },
     location: {
       type: String,
     },
-    profileImg: {
-      type: String,
+    profileImgData: {
+      type: Array,
     },
   },
   { timestamps: true }

@@ -1,5 +1,8 @@
 import { User } from "../models/user.models.js";
-import { uploadOnCloudinary } from "../utils/cloudinary_uploads.utils.js";
+import {
+  deleteFromCloudinary,
+  uploadOnCloudinary,
+} from "../utils/cloudinary_uploads.utils.js";
 import streamifier from "streamifier";
 
 const registerUser = async (req, res) => {
@@ -30,14 +33,24 @@ const registerUser = async (req, res) => {
   coverImg =
     coverImg || (uploadedCoverImg ? uploadedCoverImg.secure_url : null);
 
+  let profileImgData = [
+    { profileImg: profileImg },
+    { public_id: uploadedProfileImg?.public_id || null },
+  ];
+
+  let coverImgData = [
+    { coverImg: coverImg },
+    { public_id: uploadedCoverImg?.public_id || null },
+  ];
+
   // Create user in the database
   await User.create({
     name,
     phoneNo,
     userName,
     email: email.toLowerCase(),
-    coverImg,
-    profileImg,
+    profileImgData,
+    coverImgData,
   });
   res.status(200).json({ success: "done" });
 };
@@ -141,6 +154,21 @@ const findUserandDelete = async (req, res) => {
   const userEmail = req.params.email;
 
   try {
+    const user = await User.findOne({ email: userEmail });
+    const profileImgId = user.profileImgData[1]?.public_id;
+    const coverImgId = user.coverImgData[1]?.public_id;
+
+    if (profileImgId || coverImgId) {
+      // Create an array containing all defined IDs
+      const deleteIds = [];
+      if (profileImgId) deleteIds.push(profileImgId);
+
+      if (coverImgId) deleteIds.push(coverImgId);
+
+      // Delete images
+      await deleteFromCloudinary(deleteIds);
+    }
+
     const deletedUser = await User.findOneAndDelete({ email: userEmail });
 
     if (deletedUser) {
