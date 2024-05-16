@@ -93,8 +93,8 @@ const updateUser = async (req, res) => {
       return res.status(404).json({ msg: "User not found" });
     }
 
-    let profileImgUrl = existingUser.profileImg;
-    let coverImgUrl = existingUser.coverImg;
+    let profileImgData = existingUser.profileImgData;
+    let coverImgData = existingUser.coverImgData;
 
     if (req.files) {
       try {
@@ -103,9 +103,14 @@ const updateUser = async (req, res) => {
           const profileImgStream =
             streamifier.createReadStream(profileImgBuffer);
 
-          profileImgUrl = await uploadOnCloudinary(profileImgStream);
+          let profileImgResponse = await uploadOnCloudinary(profileImgStream);
 
-          if (!profileImgUrl) {
+          profileImgData = [
+            { profileImg: profileImgResponse?.secure_url },
+            { public_id: profileImgResponse?.public_id },
+          ];
+
+          if (!profileImgData) {
             throw new Error("Profile image upload failed");
           }
         }
@@ -114,9 +119,14 @@ const updateUser = async (req, res) => {
           const coverImgBuffer = req.files["coverImg"][0].buffer;
           const coverImgStream = streamifier.createReadStream(coverImgBuffer);
 
-          coverImgUrl = await uploadOnCloudinary(coverImgStream);
+          let coverImgResponse = await uploadOnCloudinary(coverImgStream);
 
-          if (!coverImgUrl) {
+          coverImgData = [
+            { coverImg: coverImgResponse?.secure_url },
+            { public_id: coverImgResponse?.public_id },
+          ];
+
+          if (!coverImgResponse) {
             throw new Error("Cover image upload failed");
           }
         }
@@ -134,8 +144,8 @@ const updateUser = async (req, res) => {
     if (location) updateFields.location = location;
     if (bio) updateFields.bio = bio;
     if (gender) updateFields.gender = gender;
-    if (profileImgUrl) updateFields.profileImg = profileImgUrl.secure_url;
-    if (coverImgUrl) updateFields.coverImg = coverImgUrl.secure_url;
+    if (profileImgData) updateFields.profileImgData = profileImgData;
+    if (coverImgData) updateFields.coverImgData = coverImgData;
 
     // Update user document with only the changed fields
     const user = await User.findOneAndUpdate(
