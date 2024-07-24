@@ -1,5 +1,7 @@
 
 # Backend Server
+### Live : https://server-bice-xi.vercel.app/
+
 ### Frontend : https://github.com/anku909/social-media-login-signup-project.git
 
 ## Run Locally
