@@ -1,8 +1,9 @@
 import express from "express";
 import cors from "cors";
-import { connectMongoDb } from "./mongodb.js";
+import { connectMongoDb } from "./db/mongodb.js";
 import router from "./routes/routes.js";
 import { config } from "dotenv";
+
 config();
 
 const app = express();
@@ -44,5 +45,5 @@ app.get("/", (req, res) => {
 
 // server setup
 app.listen(PORT, () => {
-  console.log("server running");
+  console.log(`server running on http://localhost:${PORT}`);
 });
